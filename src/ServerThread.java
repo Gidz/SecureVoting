@@ -8,6 +8,7 @@ class ServerThread extends Thread {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
+    public static String question = "Should pineapple be allowed on pizza ?";
     public ServerThread(Socket s)
             throws IOException {
         socket = s;
@@ -24,11 +25,24 @@ class ServerThread extends Thread {
         try {
             while (true) {
                 String str = in.readUTF();
+
                 if (str.equals("END")) break;
+
+                if(str.equals("JOIN"))
+                {
+                    out.writeUTF(question);
+                    continue;
+                }
+
                 System.out.println("Received: " + str);
-                out.writeUTF("ACK");
+//                out.writeUTF("ACK");
+                BulletinBoard.storage.add(Integer.parseInt(str));
+                int[] tally = BulletinBoard.count();
+                System.out.println("YES: "+tally[0]);
+                System.out.println("NO: "+tally[1]);
             }
-            System.out.println("closing...");
+
+
         } catch (IOException e) {
         } finally {
             try {

@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 class ClientThread extends Thread {
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private DataInputStream in;
+    private DataOutputStream out;
     private static int counter = 0;
     private int id = counter++;
     private static int threadcount = 0;
@@ -16,7 +16,7 @@ class ClientThread extends Thread {
         return threadcount;
     }
     public ClientThread(InetAddress addr) {
-        System.out.println("Making client " + id);
+//        System.out.println("Making client " + id);
         threadcount++;
         try {
             socket =
@@ -26,16 +26,9 @@ class ClientThread extends Thread {
             // nothing needs to be cleaned up.
         }
         try {
-            in =
-                    new BufferedReader(
-                            new InputStreamReader(
-                                    socket.getInputStream()));
+            in = new DataInputStream(socket.getInputStream());
             // Enable auto-flush:
-            out =
-                    new PrintWriter(
-                            new BufferedWriter(
-                                    new OutputStreamWriter(
-                                            socket.getOutputStream())), true);
+            out = new DataOutputStream(socket.getOutputStream());
             start();
         } catch(IOException e) {
             // The socket should be closed on any
@@ -50,20 +43,19 @@ class ClientThread extends Thread {
     }
     public void run() {
         try {
-            String toSend;
+            String toSend,question;
 
-            while(true) {
-                System.out.print("> ");
-                Scanner sc = new Scanner(System.in);
-                toSend = sc.nextLine();
+            out.writeUTF("JOIN");
+            question = in.readUTF();
 
-                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-                dos.writeUTF(toSend);
-
-                DataInputStream dis = new DataInputStream(socket.getInputStream());
-                System.out.println(dis.readUTF());
-            }
-
+            System.out.println("Congratulations, you've joined the voting server");
+            System.out.println("------------------------------------------------");
+            System.out.println("Question: "+ question);
+            System.out.println("Please Vote your opinion. Choose one of the options : \n 1. YES \n 2. NO");
+            System.out.print("> ");
+            Scanner sc = new Scanner(System.in);
+            toSend = sc.nextLine();
+            out.writeUTF(toSend);
         }
         catch(IOException e) {
         }

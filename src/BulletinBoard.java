@@ -9,7 +9,7 @@ public class BulletinBoard {
 
         for(int i=0;i<storage.size();i++)
         {
-            if(storage.get(i)==0)
+            if(storage.get(i)==2)
             {
                 nays+=1;
             }
