@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 public class BulletinBoard {
 
-    public static ArrayList<Integer> storage = new ArrayList<Integer>();
+    public static ArrayList<Vote> storage = new ArrayList<Vote>();
 
     public static int[] count()
     {
@@ -9,11 +9,11 @@ public class BulletinBoard {
 
         for(int i=0;i<storage.size();i++)
         {
-            if(storage.get(i)==2)
+            if(storage.get(i).getVote()==2)
             {
                 nays+=1;
             }
-            else if(storage.get(i)==1)
+            else if(storage.get(i).getVote()==1)
             {
                 yays+=1;
             }

@@ -8,12 +8,15 @@ class ServerThread extends Thread {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
     public static String question = "Should pineapple be allowed on pizza ?";
     public ServerThread(Socket s)
             throws IOException {
         socket = s;
-        in = new DataInputStream(socket.getInputStream());
-        out = new DataOutputStream(socket.getOutputStream());
+        ois = new ObjectInputStream(socket.getInputStream());
+        oos = new ObjectOutputStream(socket.getOutputStream());
+
 
         // If any of the above calls throw an 
         // exception, the caller is responsible for
@@ -24,26 +27,47 @@ class ServerThread extends Thread {
     public void run() {
         try {
             while (true) {
-                String str = in.readUTF();
+                //Receive Object
+                Object obj = ois.readObject();
 
-                if (str.equals("END")) break;
-
-                if(str.equals("JOIN"))
+                //Check the type of object
+                if(obj instanceof String)
                 {
-                    out.writeUTF(question);
-                    continue;
+                    String str = null;
+                    str = (String) obj;
+                    if (str.equals("END")) break;
+
+                    if(str.equals("JOIN"))
+                    {
+                        oos.writeObject(question);
+                        continue;
+                    }
+                    System.out.println("Received: " + str);
+                }
+                else if(obj instanceof Vote)
+                {
+                    Vote vote = (Vote) obj;
+                    if(BulletinBoard.storage.add(vote)) {
+                        oos.writeObject("Thank you. Your vote has been registered successfully");
+                    }
+                    else
+                    {
+                        oos.writeObject("Sorry. Something went wrong. Please try again.");
+                    }
+
+                    int[] tally = BulletinBoard.count();
+                    System.out.println("YES: "+tally[0]);
+                    System.out.println("NO: "+tally[1]);
+                }
+                else
+                {
+                    System.err.println("Sorry, this type of object is unknown to the system.");
                 }
 
-                System.out.println("Received: " + str);
-//                out.writeUTF("ACK");
-                BulletinBoard.storage.add(Integer.parseInt(str));
-                int[] tally = BulletinBoard.count();
-                System.out.println("YES: "+tally[0]);
-                System.out.println("NO: "+tally[1]);
             }
-
-
         } catch (IOException e) {
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         } finally {
             try {
                 socket.close();
