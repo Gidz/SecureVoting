@@ -47,7 +47,7 @@ class ServerThread extends Thread {
                 else if(obj instanceof Vote)
                 {
                     Vote vote = (Vote) obj;
-                    if(BulletinBoard.storage.add(vote)) {
+                    if(BulletinBoard.addToBulletinBoard(vote)) {
                         oos.writeObject("Thank you. Your vote has been registered successfully");
                     }
                     else

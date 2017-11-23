@@ -15,8 +15,12 @@ public class Server {
         System.out.println("Server Started");
         try {
 
-            /* The timing mechanism */
-            /////////////////////////
+            /* The timer mechanism. Implemented by busy wait. Can be optimized further.
+             * This will be run on a separate thread.
+             * The thread keeps checking for the time and shuts down
+             * the server once the time set is elapsed.
+             * The ending time should be set in seconds by ENDTIME variable declared above.
+             * */
 
             Thread t = new Thread() {
                 public void run() {
@@ -27,6 +31,12 @@ public class Server {
                         //Busy wait
                     }
                     System.out.println(exitMessage);
+                    try {
+                        BulletinBoard.storeVotes();
+                        System.out.println("The votes are stored safely to the storage device.");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     System.exit(0);
                 }
             };
