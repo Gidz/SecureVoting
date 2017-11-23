@@ -10,6 +10,8 @@ class ClientThread extends Thread {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
 
+    private static int socketTimeout = 100;
+
     private static int counter = 0;
     private int id = counter++;
     private static int threadcount = 0;
@@ -27,6 +29,7 @@ class ClientThread extends Thread {
             // nothing needs to be cleaned up.
         }
         try {
+            socket.setSoTimeout(socketTimeout);
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
             start();
@@ -64,11 +67,15 @@ class ClientThread extends Thread {
             Vote vote = new Vote(Integer.parseInt(toSend));
             oos.writeObject(vote);
             System.out.println((String) ois.readObject());
+        } catch (SocketTimeoutException e) {
+          System.err.println("Socket timed out.. oops!");
+        } catch(IOException e) {
+            System.out.println("Your vote hasn't been registered. Please try again.");
         }
-        catch(IOException e) {
-        } catch (ClassNotFoundException e) {
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
-        } finally {
+        } finally
+        {
             // Always close it:
             try {
                 socket.close();
