@@ -16,14 +16,13 @@ public class BulletinBoard {
 
         for(int i=0;i<storage.size();i++)
         {
-            if(storage.get(i).getVote()==2)
+            if(storage.get(i).getVote()==0)
                 nays+=1;
             else if(storage.get(i).getVote()==1)
                 yays+=1;
             else
                 continue;
         }
-
         int[] tally = {yays,nays};
         return tally;
     }
@@ -49,12 +48,36 @@ public class BulletinBoard {
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
         System.out.println("Welcome to Bulletin Board");
+        System.out.println("-------------------------");
 
-        // read object from file
-        FileInputStream fis = new FileInputStream("votes.ser");
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        ArrayList<Vote> votes = (ArrayList<Vote>) ois.readObject();
-        displayBulletinBoard(votes);
-        ois.close();
+        //Print the menu here
+        System.out.println("Please select what you want to do : ");
+        System.out.println("1. Display Board");
+        System.out.println("2. Verify Vote");
+
+        Scanner sc = new Scanner(System.in);
+
+        int choice = sc.nextInt();
+        switch(choice)
+        {
+            case 1:
+            {
+                // read object from file
+                FileInputStream fis = new FileInputStream("votes.ser");
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                ArrayList<Vote> votes = (ArrayList<Vote>) ois.readObject();
+                displayBulletinBoard(votes);
+                ois.close();
+                break;
+            }
+            case 2:
+            {
+                break;
+            }
+            default:
+            {
+                System.out.println("Please select a proper option.");
+            }
+        }
     }
 }

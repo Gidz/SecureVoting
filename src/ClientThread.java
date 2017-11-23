@@ -63,8 +63,15 @@ class ClientThread extends Thread {
             Scanner sc = new Scanner(System.in);
             toSend = sc.nextLine();
 
+            int v = -1;
+            if(Integer.parseInt(toSend) == 1)
+                v=1;
+            else if(Integer.parseInt(toSend) == 2)
+                v=0;
+
             //Make a Vote object
-            Vote vote = new Vote(Integer.parseInt(toSend));
+            Vote vote = new Vote(v);
+
             oos.writeObject(vote);
             System.out.println((String) ois.readObject());
         } catch (SocketTimeoutException e) {
