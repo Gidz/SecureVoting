@@ -1,11 +1,21 @@
 //: MultiJabberClient.java
 // Client that tests the MultiJabberServer
 // by starting up multiple clients.
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.net.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.util.Base64;
 import java.util.Scanner;
 
 class ClientThread extends Thread {
+    static boolean debug = true;
     private Socket socket;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
@@ -19,7 +29,6 @@ class ClientThread extends Thread {
         return threadcount;
     }
     public ClientThread(InetAddress addr) {
-//        System.out.println("Making client " + id);
         threadcount++;
         try {
             socket =
@@ -47,12 +56,18 @@ class ClientThread extends Thread {
     public void run() {
         try {
             String toSend,question;
+
+            //Send a join request to the server
             oos.writeObject(new String("JOIN"));
 
             //Client only receives objects of type String.
             //No need to check for the type of object.
 
+            //Get the public key from the server
+            Key pubKey = (Key) ois.readObject();
+            if(debug) System.out.println(ElGamal.encodeKey(pubKey));
             question = (String) ois.readObject();
+
             System.out.println("Congratulations, you've joined the voting server");
             System.out.println("------------------------------------------------");
             System.out.println("Question: "+ question);
@@ -63,16 +78,17 @@ class ClientThread extends Thread {
             Scanner sc = new Scanner(System.in);
             toSend = sc.nextLine();
 
-            int v = -1;
-            if(Integer.parseInt(toSend) == 1)
-                v=1;
-            else if(Integer.parseInt(toSend) == 2)
-                v=0;
+            //Encrypt the vote
+            byte[] v = ElGamal.encryptVote(toSend,pubKey);
+
+            //Decrypt the vote
+//            System.out.println(ElGamal.encodeKey(Server.privKey));
 
             //Make a Vote object
             Vote vote = new Vote(v);
-
             oos.writeObject(vote);
+
+            //Get the confirmation message
             System.out.println((String) ois.readObject());
         } catch (SocketTimeoutException e) {
           System.err.println("Socket timed out.. oops!");
@@ -80,6 +96,18 @@ class ClientThread extends Thread {
             System.out.println("Your vote hasn't been registered. Please try again.");
         }
         catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
             e.printStackTrace();
         } finally
         {

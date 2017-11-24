@@ -10,22 +10,22 @@ public class BulletinBoard {
 
     }
 
-    public static int[] count()
-    {
-        int yays=0,nays=0;
-
-        for(int i=0;i<storage.size();i++)
-        {
-            if(storage.get(i).getVote()==0)
-                nays+=1;
-            else if(storage.get(i).getVote()==1)
-                yays+=1;
-            else
-                continue;
-        }
-        int[] tally = {yays,nays};
-        return tally;
-    }
+//    public static int[] count()
+//    {
+//        int yays=0,nays=0;
+//
+//        for(int i=0;i<storage.size();i++)
+//        {
+//            if(storage.get(i).getVote()==0)
+//                nays+=1;
+//            else if(storage.get(i).getVote()==1)
+//                yays+=1;
+//            else
+//                continue;
+//        }
+//        int[] tally = {yays,nays};
+//        return tally;
+//    }
 
     public static boolean addToBulletinBoard(Vote vote)
     {
@@ -40,7 +40,7 @@ public class BulletinBoard {
         }
     }
 
-    public static void storeVotes() throws IOException {
+    protected static void storeVotes() throws IOException {
         FileOutputStream fos = new FileOutputStream("votes.ser");
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(storage);

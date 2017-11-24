@@ -3,6 +3,8 @@
 // any number of clients.
 import java.io.*;
 import java.net.*;
+import java.security.Key;
+import java.util.Base64;
 
 class ServerThread extends Thread {
     private Socket socket;
@@ -39,6 +41,10 @@ class ServerThread extends Thread {
 
                     if(str.equals("JOIN"))
                     {
+                        //Send the public key of the server
+                        System.out.println(ElGamal.encodeKey(Server.pubKey));
+                        oos.writeObject((Key)Server.pubKey);
+
                         oos.writeObject(question);
                         continue;
                     }
@@ -55,9 +61,9 @@ class ServerThread extends Thread {
                         oos.writeObject("Sorry. Something went wrong. Please try again.");
                     }
 
-                    int[] tally = BulletinBoard.count();
-                    System.out.println("YES: "+tally[0]);
-                    System.out.println("NO: "+tally[1]);
+//                    int[] tally = BulletinBoard.count();
+//                    System.out.println("YES: "+tally[0]);
+//                    System.out.println("NO: "+tally[1]);
                 }
                 else
                 {

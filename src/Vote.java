@@ -1,12 +1,12 @@
 import java.io.Serializable;
 
 public class Vote implements Serializable{
-    int vote;
-    public Vote(int vote)
+    byte[] vote;
+    public Vote(byte[] vote)
     {
         this.vote = vote;
     }
-    public int getVote()
+    public byte[] getVote()
     {
         return this.vote;
     }
