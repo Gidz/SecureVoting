@@ -1,12 +1,17 @@
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Vote implements Serializable{
-    byte[] vote;
-    public Vote(byte[] vote)
+
+    ArrayList<BigInteger> vote;
+
+    public Vote(ArrayList<BigInteger> vote)
     {
         this.vote = vote;
     }
-    public byte[] getVote()
+
+    public ArrayList<BigInteger> getVote()
     {
         return this.vote;
     }

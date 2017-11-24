@@ -1,13 +1,24 @@
-import java.security.*;
-import java.util.Base64;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.security.*;
+import java.util.Base64;
 
 public class ElGamal{
 
-    static byte[] encryptVote(java.lang.String plainText,Key publicKey) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
+    private static  byte[] intToByteArray ( final int i ) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(bos);
+        dos.writeInt(i);
+        dos.flush();
+        return bos.toByteArray();
+    }
+
+    static byte[] encryptVote(int plainText,Key publicKey) throws NoSuchPaddingException, NoSuchAlgorithmException, NoSuchProviderException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException, IOException {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        byte[] input = plainText.getBytes();
+        byte[] input = intToByteArray(plainText);
         Cipher cipher = Cipher.getInstance("ELGamal","BC");
         SecureRandom random = new SecureRandom();
         cipher.init(Cipher.ENCRYPT_MODE, publicKey, random);

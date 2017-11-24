@@ -1,16 +1,18 @@
-import java.io.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.*;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.util.ArrayList;
 
 public class Server {
     static final int PORT = 8080;
     static final long endTime = 60;
     static final String exitMessage = "The Elections have ended. No further votes will be accepted";
-
-    static public Key pubKey;
-    static public Key privKey;
-
+    static ArrayList<BigInteger> sk,pk;
     static long start = System.currentTimeMillis();
 
     public static void main(String[] args)
@@ -18,14 +20,10 @@ public class Server {
         ServerSocket s = new ServerSocket(PORT);
         System.out.println("Server Started");
 
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("ELGamal","BC");
-        SecureRandom random = new SecureRandom();
-        generator.initialize(256, random);
-        KeyPair pair = generator.generateKeyPair();
-        pubKey = pair.getPublic();
-        privKey = pair.getPrivate();
+        //Generate public and private keys
+        ElGamalScheme.KeyGen(200);
+        pk = ElGamalScheme.getPublicKey();
+        sk = ElGamalScheme.getPrivateKey();
 
         try {
 
@@ -35,14 +33,9 @@ public class Server {
              * the server once the time set is elapsed.
              * The ending time should be set in seconds by ENDTIME variable declared above.
              * */
-
-//            System.out.println("Generated an ElGamal key pair");
-//            System.out.println(ElGamal.encodeKey(pubKey));
-//            System.out.println(ElGamal.encodeKey(privKey));
-
             //Store the public and private key pair in separate files
-            writeKeytoFile("pub.key",pubKey);
-            writeKeytoFile("pri.key",privKey);
+            writeKeytoFile("pub.key",pk);
+            writeKeytoFile("pri.key",sk);
 
             Thread t = new Thread() {
                 public void run() {
@@ -81,10 +74,10 @@ public class Server {
         }
     }
 
-    private static void writeKeytoFile(String fileName,Key key) throws IOException {
+    private static void writeKeytoFile(String fileName,ArrayList<BigInteger> key) throws IOException {
         FileOutputStream fos = new FileOutputStream(fileName);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(pubKey);
+        oos.writeObject(key);
         fos.close();
         oos.close();
     }
