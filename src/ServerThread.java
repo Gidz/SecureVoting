@@ -3,7 +3,9 @@
 // any number of clients.
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.util.ArrayList;
 
 class ServerThread extends Thread {
     private Socket socket;
@@ -53,6 +55,10 @@ class ServerThread extends Thread {
                 {
                     Vote vote = (Vote) obj;
                     if(BulletinBoard.addToBulletinBoard(vote)) {
+                        ArrayList<BigInteger> a = vote.getVote();
+
+//                        System.out.println("Decrypted : " + ElGamalScheme.Decrypt_homomorphe(ElGamalScheme.sk,ElGamalScheme.pk.get(1),a.get(0),a.get(1)));
+
                         oos.writeObject("Thank you. Your vote has been registered successfully");
                     }
                     else
