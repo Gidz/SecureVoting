@@ -63,11 +63,13 @@ public final class ElGamalScheme {
 
     /**
      * Encrypt ElGamalScheme
-     *
-     * @param (p,g,h) public key
+     * @param (pk) public key
      * @param message message
      */
-    public static List<BigInteger> Encrypt(BigInteger p, BigInteger g, BigInteger h, BigInteger message) {
+    public static List<BigInteger> Encrypt(ArrayList<BigInteger>pk, BigInteger message) {
+        BigInteger p = pk.get(0);
+        BigInteger g = pk.get(1);
+        BigInteger h = pk.get(2);
         BigInteger pPrime = p.subtract(BigInteger.ONE).divide(ElGamalScheme.TWO);
         // TODO [0, N -1] or [1, N-1] ?
         BigInteger r = randNum(pPrime, new Random());
@@ -103,7 +105,9 @@ public final class ElGamalScheme {
      * @param (gr,mhr) (g^r, m * h^r)
      * @return the decrypted message
      */
-    public static BigInteger Decrypt(BigInteger gr, BigInteger mhr) {
+    public static BigInteger Decrypt(ArrayList<BigInteger> sk,BigInteger gr, BigInteger mhr) {
+        BigInteger p = sk.get(0);
+        BigInteger x = sk.get(1);
         BigInteger hr = gr.modPow(x, p);
         return mhr.multiply(hr.modInverse(p)).mod(p);
     }
@@ -173,11 +177,21 @@ public final class ElGamalScheme {
         ElGamalScheme.KeyGen(200);
 
         System.out.println("Message : 12");
-        List<BigInteger> encrypt1 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("0"));
+//        List<BigInteger> encrypt1 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("-1"));
+//        List<BigInteger> encrypt2 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("0"));
+//
+//        BigInteger a = encrypt1.get(0).multiply(encrypt2.get(0));
+//        BigInteger b = encrypt1.get(1).multiply(encrypt2.get(1));
+//        System.out.println("Decrypted : " + ElGamalScheme.Decrypt_homomorphe(sk,g,a,b));
+
+        List<BigInteger> encrypt1 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("-1"));
         List<BigInteger> encrypt2 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("0"));
 
         BigInteger a = encrypt1.get(0).multiply(encrypt2.get(0));
         BigInteger b = encrypt1.get(1).multiply(encrypt2.get(1));
+
         System.out.println("Decrypted : " + ElGamalScheme.Decrypt_homomorphe(sk,g,a,b));
+
+//        System.out.println("Decrypted : " + ElGamalScheme.Decrypt(sk,encrypt1.get(0),encrypt1.get(1)));
     }
 }
