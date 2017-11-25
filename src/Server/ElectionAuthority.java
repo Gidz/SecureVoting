@@ -44,16 +44,17 @@ public class ElectionAuthority {
 
         for(int i=0;i<votes.size();i++)
         {
+            //If it is the last vote
             if((i+1) >= votes.size())
             {
-                tally = tally.add(ElGamalScheme.Decrypt_homomorphe(sk,pk.get(1),temp1,temp2));
+                tally = tally.add(ElGamalScheme.Decrypt_homomorphe(sk,pk.get(1),votes.get(i).getVote().get(0),votes.get(i).getVote().get(1)));
             }
             else
             {
                 temp1 = votes.get(i).getVote().get(0).multiply(votes.get(i+1).getVote().get(0));
                 temp2 = votes.get(i).getVote().get(1).multiply(votes.get(i+1).getVote().get(1));
-                i++;
                 tally = tally.add(ElGamalScheme.Decrypt_homomorphe(sk,pk.get(1),temp1,temp2));
+                i++;
             }
         }
 
@@ -73,7 +74,7 @@ public class ElectionAuthority {
         System.out.println("Calculating votes.");
         int tally = calculateResult().intValue() ;
         System.out.println("YES : "+tally);
-        System.out.println("NO : "+(votes.size() - tally - 1));
+        System.out.println("NO : "+(votes.size() - tally));
 
     }
 }
