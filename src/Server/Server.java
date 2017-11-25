@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -7,9 +9,11 @@ import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.ArrayList;
+import Client.BulletinBoard;
+import Crypto.ElGamalScheme;
 
 public class Server {
-    static final int PORT = 8080;
+    public static final int PORT = 8080;
     static final long endTime = 60;
     static final String exitMessage = "The Elections have ended. No further votes will be accepted";
     static ArrayList<BigInteger> sk,pk;
@@ -27,16 +31,16 @@ public class Server {
 
         try {
 
-            /* The timer mechanism. Implemented by busy wait. Can be optimized further.
-             * This will be run on a separate thread.
-             * The thread keeps checking for the time and shuts down
-             * the server once the time set is elapsed.
-             * The ending time should be set in seconds by ENDTIME variable declared above.
-             * */
-            //Store the public and private key pair in separate files
+            /*Store the public and private key pair to their respective files.
+            * Server is run on a separate machine than the clients, so there is
+            * no chance of voters accessing these keys.
+            * */
             writeKeytoFile("pub.key",pk);
             writeKeytoFile("pri.key",sk);
 
+            /*A thread which keeps track of time. Once enough time has elapsed, this
+            * thread stops the elections, stores all the votes to a file and exits.
+            * */
             Thread t = new Thread() {
                 public void run() {
                     long end = start + (endTime * 1000); // 60 seconds * 1000 ms/sec
@@ -47,6 +51,7 @@ public class Server {
                     }
                     System.out.println(exitMessage);
                     try {
+                        //Store the votes in a file
                         BulletinBoard.storeVotes();
                         System.out.println("The votes are stored safely to the storage device.");
                     } catch (IOException e) {

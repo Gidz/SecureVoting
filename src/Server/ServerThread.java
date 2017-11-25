@@ -1,6 +1,8 @@
-//: MultiJabberServer.java
-// A server that uses multithreading to handle
-// any number of clients.
+package Server;
+
+import Client.BulletinBoard;
+import Crypto.ElGamalScheme;
+import libs.Vote;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -43,7 +45,7 @@ class ServerThread extends Thread {
                     if(str.equals("JOIN"))
                     {
                         //Send the public key of the server
-                        System.out.println(ElGamalScheme.pk);
+                        System.out.println("Shared the public key with the voter.");
                         oos.writeObject(ElGamalScheme.pk);
 
                         oos.writeObject(question);

@@ -1,3 +1,8 @@
+package Server;
+
+import Crypto.ElGamalScheme;
+import libs.Vote;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -43,7 +48,6 @@ public class ElectionAuthority {
             {
                 tally = tally.add(ElGamalScheme.Decrypt_homomorphe(sk,pk.get(1),temp1,temp2));
             }
-
             else
             {
                 temp1 = votes.get(i).getVote().get(0).multiply(votes.get(i+1).getVote().get(0));
@@ -69,7 +73,7 @@ public class ElectionAuthority {
         System.out.println("Calculating votes.");
         int tally = calculateResult().intValue() ;
         System.out.println("YES : "+tally);
-        System.out.println("NO : "+(votes.size() - tally -1));
+        System.out.println("NO : "+(votes.size() - tally - 1));
 
     }
 }

@@ -1,3 +1,7 @@
+package Crypto;/*Thanks to  https://github.com/Ananasr for the ElGamal implementation.
+* However, a lot has been tweaked to make the components fit in the project.
+* */
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,12 +55,15 @@ public final class ElGamalScheme {
         // [0] = pk, [1] = sk
     }
 
+    /*Methods to pass around the public and private keys
+    * It should be noted that private key can only be shared with
+    * the main Server class.
+    * */
     public static ArrayList<BigInteger> getPublicKey()
     {
        return pk;
     }
-
-    protected static ArrayList<BigInteger> getPrivateKey()
+    public static ArrayList<BigInteger> getPrivateKey()
     {
         return sk;
     }
@@ -79,7 +86,6 @@ public final class ElGamalScheme {
 
     /**
      * Encrypt ElGamalScheme homomorphe
-     *
      * @param message message
      */
     public static ArrayList<BigInteger> Encrypt_Homomorph(ArrayList<BigInteger> pk,BigInteger message) {
@@ -101,7 +107,6 @@ public final class ElGamalScheme {
 
     /**
      * Decrypt ElGamalScheme
-     *
      * @param (gr,mhr) (g^r, m * h^r)
      * @return the decrypted message
      */
@@ -133,7 +138,13 @@ public final class ElGamalScheme {
             m = m.add(BigInteger.ONE);
             gm_prime = g.modPow(m, p);
 
-            //Project specific constraint
+            /*Project specific constraint
+             *In case negative numbers or zero is passed, the above implementation
+             * gets stuck in a permanent loop. Assuming that general calculations
+             * required for this project won't take more than 5 seconds, break out
+             * of the loop returning zero
+             * */
+
             if(System.currentTimeMillis() > startTime + (5 * 1000))
             {
                 return new BigInteger("0");
@@ -173,17 +184,11 @@ public final class ElGamalScheme {
         return new BigInteger(N.bitLength() + 100, prg).mod(N);
     }
 
+    /*Use the main function to debug the ElGamal Scheme implemented above*/
     public static void main(String[] args) {
         ElGamalScheme.KeyGen(200);
 
         System.out.println("Message : 12");
-//        List<BigInteger> encrypt1 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("-1"));
-//        List<BigInteger> encrypt2 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("0"));
-//
-//        BigInteger a = encrypt1.get(0).multiply(encrypt2.get(0));
-//        BigInteger b = encrypt1.get(1).multiply(encrypt2.get(1));
-//        System.out.println("Decrypted : " + ElGamalScheme.Decrypt_homomorphe(sk,g,a,b));
-
         List<BigInteger> encrypt1 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("-1"));
         List<BigInteger> encrypt2 = ElGamalScheme.Encrypt_Homomorph(pk,new BigInteger("0"));
 
@@ -191,7 +196,5 @@ public final class ElGamalScheme {
         BigInteger b = encrypt1.get(1).multiply(encrypt2.get(1));
 
         System.out.println("Decrypted : " + ElGamalScheme.Decrypt_homomorphe(sk,g,a,b));
-
-//        System.out.println("Decrypted : " + ElGamalScheme.Decrypt(sk,encrypt1.get(0),encrypt1.get(1)));
     }
 }

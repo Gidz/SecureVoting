@@ -1,6 +1,4 @@
-//: MultiJabberClient.java
-// Client that tests the MultiJabberServer
-// by starting up multiple clients.
+package Client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,8 +10,11 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import Server.*;
+import Crypto.*;
+import libs.Vote;
 
-class ClientThread extends Thread {
+public class ClientThread extends Thread {
     static boolean debug = true;
     private Socket socket;
     private ObjectOutputStream oos;
@@ -93,18 +94,20 @@ class ClientThread extends Thread {
             //Encrypt the vote
             ArrayList<BigInteger> v = ElGamalScheme.Encrypt_Homomorph(pk,BigInteger.valueOf(i));
 
-            //Decrypt the vote
-            //System.out.println(ElGamal.encodeKey(Server.privKey));
-
             //Make a Vote object
             Vote vote = new Vote(v);
+
+            //Send the vote across the network
             oos.writeObject(vote);
 
             //Get the confirmation message
             System.out.println((String) ois.readObject());
+
         } catch (SocketTimeoutException e) {
+            //In case of networking failures or when server takes too long to respond
           System.err.println("Socket timed out.. Oops!");
         } catch(IOException e) {
+            //In case the server hasn't registerd the vote sent
             System.out.println("Your vote hasn't been registered. Please try again.");
         }
         catch (ClassNotFoundException e) {
@@ -116,7 +119,7 @@ class ClientThread extends Thread {
             try {
                 socket.close();
             } catch(IOException e) {}
-            threadcount--; // Ending this thread
+            threadcount--;
         }
     }
 }
