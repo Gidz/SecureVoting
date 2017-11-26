@@ -1,14 +1,10 @@
 package Server;
-
 import Crypto.ElGamalScheme;
 import libs.Vote;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -66,8 +62,12 @@ public class ElectionAuthority {
         //Calculate the result
         System.out.println("Calculating votes.");
         ArrayList<Integer> tally = calculateResult();
-
         System.out.println("YES : "+tally.get(0));
         System.out.println("NO : "+tally.get(1));
+
+        //Save the result to file
+        FileOutputStream fos = new FileOutputStream("result.obj");
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(tally);
     }
 }
