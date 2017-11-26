@@ -1,8 +1,18 @@
 package Client;
 import java.io.*;
+import java.lang.reflect.Array;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import Server.ElectionAuthority;
 import libs.Vote;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class BulletinBoard {
 
@@ -31,7 +41,7 @@ public class BulletinBoard {
         oos.writeObject(storage);
     }
 
-    public static void main(String args[]) throws IOException, ClassNotFoundException {
+    public static void main(String args[]) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidKeyException {
         System.out.println("Welcome to Bulletin Board");
         System.out.println("-------------------------");
 
@@ -57,6 +67,9 @@ public class BulletinBoard {
             }
             case 2:
             {
+                ArrayList<Integer> result = ElectionAuthority.calculateResult();
+                System.out.println("YES : "+result.get(0));
+                System.out.println("NO : "+result.get(1));
                 break;
             }
             default:
