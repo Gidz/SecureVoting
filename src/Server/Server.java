@@ -9,12 +9,15 @@ import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 import Client.BulletinBoard;
 import Crypto.ElGamalScheme;
 
 public class Server {
     public static final int PORT = 8080;
     static final long endTime = 60;
+    public static String question;
     static final String exitMessage = "The Elections have ended. No further votes will be accepted";
     static ArrayList<BigInteger> sk,pk;
     static long start = System.currentTimeMillis();
@@ -37,6 +40,11 @@ public class Server {
             * */
             writeKeytoFile("pub.key",pk);
             writeKeytoFile("pri.key",sk);
+
+            //Set the question
+            System.out.print("Set the question : ");
+            Scanner sc = new Scanner(System.in);
+            question = sc.nextLine();
 
             /*A thread which keeps track of time. Once enough time has elapsed, this
             * thread stops the elections, stores all the votes to a file and exits.

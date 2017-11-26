@@ -31,7 +31,7 @@ public class BulletinBoard {
     {
         for (int i=0;i<votes.size();i++)
         {
-            System.out.println(votes.get(i).getVote());
+            System.out.println(votes.get(i).getVote().get(0));
         }
     }
 
@@ -45,37 +45,46 @@ public class BulletinBoard {
         System.out.println("Welcome to Bulletin Board");
         System.out.println("-------------------------");
 
-        //Print the menu here
-        System.out.println("Please select what you want to do : ");
-        System.out.println("1. Display Board");
-        System.out.println("2. Verify Vote");
-
-        Scanner sc = new Scanner(System.in);
-
-        int choice = sc.nextInt();
-        switch(choice)
+        while(true)
         {
-            case 1:
+            //Print the menu here
+            System.out.println("Please select what you want to do : ");
+            System.out.println("1. Display Board");
+            System.out.println("2. Verify Votes");
+            System.out.println("3. Exit");
+
+            Scanner sc = new Scanner(System.in);
+            int choice = sc.nextInt();
+            switch(choice)
             {
-                // read object from file
-                FileInputStream fis = new FileInputStream("votes.ser");
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                ArrayList<Vote> votes = (ArrayList<Vote>) ois.readObject();
-                displayBulletinBoard(votes);
-                ois.close();
-                break;
-            }
-            case 2:
-            {
-                ArrayList<Integer> result = ElectionAuthority.calculateResult();
-                System.out.println("YES : "+result.get(0));
-                System.out.println("NO : "+result.get(1));
-                break;
-            }
-            default:
-            {
-                System.out.println("Please select a proper option.");
+                case 1:
+                {
+                    // read object from file
+                    FileInputStream fis = new FileInputStream("votes.ser");
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    ArrayList<Vote> votes = (ArrayList<Vote>) ois.readObject();
+                    displayBulletinBoard(votes);
+                    ois.close();
+                    break;
+                }
+                case 2:
+                {
+                    ArrayList<Integer> result = ElectionAuthority.calculateResult();
+                    System.out.println("YES : "+result.get(0));
+                    System.out.println("NO : "+result.get(1));
+                    break;
+                }
+                case 3:
+                {
+                    System.out.println("Exiting");
+                    System.exit(0);
+                }
+                default:
+                {
+                    System.out.println("Please select a proper option.");
+                }
             }
         }
+
     }
 }

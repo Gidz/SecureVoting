@@ -8,6 +8,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.util.ArrayList;
+import static Server.Server.question;
 
 class ServerThread extends Thread {
     private Socket socket;
@@ -15,7 +16,6 @@ class ServerThread extends Thread {
     private DataOutputStream out;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
-    public static String question = "Should pineapple be allowed on pizza ?";
     public ServerThread(Socket s)
             throws IOException {
         socket = s;
