@@ -42,6 +42,25 @@ public class BulletinBoard {
     }
 
     public static void main(String args[]) throws IOException, ClassNotFoundException, NoSuchPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidKeyException {
+
+        try
+        {
+            FileInputStream fis = new FileInputStream("result.obj");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            ArrayList<Integer> results = (ArrayList<Integer>) ois.readObject();
+            System.out.println("The results are as follows");
+            System.out.println("YES : "+results.get(0));
+            System.out.println("NO : "+results.get(1));
+            System.out.println("-------------------------");
+
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println("The authorities haven't calculated the results yet.");
+        }
+
+
+
         System.out.println("Welcome to Bulletin Board");
         System.out.println("-------------------------");
 

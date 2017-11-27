@@ -1,8 +1,6 @@
 package Server;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -45,6 +43,11 @@ public class Server {
             System.out.print("Set the question : ");
             Scanner sc = new Scanner(System.in);
             question = sc.nextLine();
+
+
+            PrintWriter writer = new PrintWriter("question.txt", "UTF-8");
+            writer.println(question);
+            writer.close();
 
             /*A thread which keeps track of time. Once enough time has elapsed, this
             * thread stops the elections, stores all the votes to a file and exits.
