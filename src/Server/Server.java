@@ -89,7 +89,6 @@ public class Server {
             s.close();
         }
     }
-
     private static void writeKeytoFile(String fileName,ArrayList<BigInteger> key) throws IOException {
         FileOutputStream fos = new FileOutputStream(fileName);
         ObjectOutputStream oos = new ObjectOutputStream(fos);

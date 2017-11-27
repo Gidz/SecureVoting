@@ -48,11 +48,22 @@ public class BulletinBoard {
             FileInputStream fis = new FileInputStream("result.obj");
             ObjectInputStream ois = new ObjectInputStream(fis);
             ArrayList<Integer> results = (ArrayList<Integer>) ois.readObject();
-            System.out.println("The results are as follows");
+            ois.close();
+            fis.close();
+
+            String question;
+            FileReader fileReader = new FileReader("question.txt");
+            System.out.println("The results are as follows . . .");
+            System.out.print("Question : ");
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while((question = bufferedReader.readLine()) != null) {
+                System.out.println(question);
+            }
+            // Always close files.
+            bufferedReader.close();
             System.out.println("YES : "+results.get(0));
             System.out.println("NO : "+results.get(1));
             System.out.println("-------------------------");
-
         }
         catch (FileNotFoundException e)
         {
