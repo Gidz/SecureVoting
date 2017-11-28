@@ -40,7 +40,6 @@ public class ClientThread extends Thread {
             // nothing needs to be cleaned up.
         }
         try {
-            socket.setSoTimeout(socketTimeout);
             oos = new ObjectOutputStream(socket.getOutputStream());
             ois = new ObjectInputStream(socket.getInputStream());
             start();
@@ -56,6 +55,19 @@ public class ClientThread extends Thread {
         // the run() method of the thread.
     }
     public void run() {
+        System.out.println("Not so fast. Enter username and password.");
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Username : ");
+        String user = sc.nextLine();
+        System.out.print("Password : ");
+        String password = sc.nextLine();
+
+        if(!Checker.authenticate(user,password))
+        {
+            System.out.println("Sorry, you are not recognized as an eligible voter.");
+            System.exit(0);
+        }
+
         try {
             String toSend,question;
 
@@ -76,7 +88,6 @@ public class ClientThread extends Thread {
             System.out.print("> ");
 
             //Get the input from user
-            Scanner sc = new Scanner(System.in);
             toSend = sc.nextLine();
 
             // Resolve options to 0 or 1

@@ -8,6 +8,8 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 import static Server.Server.question;
 
 class ServerThread extends Thread {

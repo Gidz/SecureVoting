@@ -2,6 +2,7 @@ package Server;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.net.Authenticator;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
@@ -14,12 +15,11 @@ import Crypto.ElGamalScheme;
 
 public class Server {
     public static final int PORT = 8080;
-    static final long endTime = 60;
+    static final long endTime = 120;
     public static String question;
     static final String exitMessage = "The Elections have ended. No further votes will be accepted";
     static ArrayList<BigInteger> sk,pk;
     static long start = System.currentTimeMillis();
-
     public static void main(String[] args)
             throws IOException, NoSuchProviderException, NoSuchAlgorithmException {
         ServerSocket s = new ServerSocket(PORT);
