@@ -33,12 +33,21 @@ public class Checker {
 
     public static boolean authenticate(String username, String password)
     {
+        String passwd = null;
         loadUsers("users");
-        String passwd = (String) users.get((String) username);
-        if(passwd.equals(password))
+        try
         {
-            return true;
+            passwd = (String) users.get((String) username);
+            if(passwd.equals(password))
+            {
+                return true;
+            }
         }
+        catch (NullPointerException e)
+        {
+            return false;
+        }
+
         //Pessimistic approach
         return false;
     }
