@@ -2,13 +2,13 @@ package Server;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.net.Authenticator;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 import Client.BulletinBoard;
 import Crypto.ElGamalScheme;
@@ -20,6 +20,16 @@ public class Server {
     static final String exitMessage = "The Elections have ended. No further votes will be accepted";
     static ArrayList<BigInteger> sk,pk;
     static long start = System.currentTimeMillis();
+
+    public static ArrayList<String> voters = new ArrayList<>();
+
+    protected static void markVoter(String username)
+    {
+        voters.add(username);
+    }
+
+
+
     public static void main(String[] args)
             throws IOException, NoSuchProviderException, NoSuchAlgorithmException {
         ServerSocket s = new ServerSocket(PORT);

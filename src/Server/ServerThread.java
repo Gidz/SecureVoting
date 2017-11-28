@@ -8,6 +8,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import static Server.Server.question;
@@ -40,29 +41,47 @@ class ServerThread extends Thread {
                 //Check the type of object
                 if(obj instanceof String)
                 {
-                    String str = null;
+                    String str;
                     str = (String) obj;
-                    if (str.equals("END")) break;
-
                     if(str.equals("JOIN"))
                     {
                         //Send the public key of the server
                         System.out.println("Shared the public key with the voter.");
                         oos.writeObject(ElGamalScheme.pk);
-
                         oos.writeObject(question);
                         continue;
                     }
-                    System.out.println("Received: " + str);
+                    else
+                    {
+                        String username = (String) obj;
+                        //Check if the voter has voted before
+                        boolean voted = true;
+                        if(Server.voters.isEmpty())
+                            voted =  false;
+
+                        if(Server.voters.contains((String) username))
+                            voted = Server.voters.contains((String) username);
+                        else
+                            voted = false;
+
+                        if(voted)
+                        {
+                            oos.writeObject("VOTED");
+                            //Kill the thread
+                            socket.close();
+                        }
+                        else
+                        {
+                            Server.markVoter((String)obj);
+                            oos.writeObject("NOT VOTED");
+                        }
+                    }
                 }
                 else if(obj instanceof Vote)
                 {
                     Vote vote = (Vote) obj;
                     if(BulletinBoard.addToBulletinBoard(vote)) {
                         ArrayList<BigInteger> a = vote.getVote();
-
-//                        System.out.println("Decrypted : " + ElGamalScheme.Decrypt_homomorphe(ElGamalScheme.sk,ElGamalScheme.pk.get(1),a.get(0),a.get(1)));
-
                         oos.writeObject("Thank you. Your vote has been registered successfully");
                     }
                     else
@@ -74,7 +93,6 @@ class ServerThread extends Thread {
                 {
                     System.err.println("Sorry, this type of object is unknown to the system.");
                 }
-
             }
         } catch (IOException e) {
         } catch (ClassNotFoundException e) {

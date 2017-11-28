@@ -58,11 +58,11 @@ public class ClientThread extends Thread {
         System.out.println("Not so fast. Enter username and password.");
         Scanner sc = new Scanner(System.in);
         System.out.print("Username : ");
-        String user = sc.nextLine();
+        String username = sc.nextLine();
         System.out.print("Password : ");
         String password = sc.nextLine();
 
-        if(!Checker.authenticate(user,password))
+        if(!Checker.authenticate(username,password))
         {
             System.out.println("Sorry, you are not recognized as an eligible voter.");
             System.exit(0);
@@ -73,13 +73,22 @@ public class ClientThread extends Thread {
 
             //Send a join request to the server
             oos.writeObject(new String("JOIN"));
-
-            //Client only receives objects of type String.
-            //No need to check for the type of object.
+            oos.writeObject(new String(username));
 
             //Get the public key from the server
             ArrayList<BigInteger> pk = (ArrayList<BigInteger>) ois.readObject();
             question = (String) ois.readObject();
+
+            //See if the voter has already voted
+            String status = (String) ois.readObject();
+
+            if(status.equals("VOTED"))
+            {
+                System.out.println("You have already voted.");
+                System.exit(0);
+            }
+            //Client only receives objects of type String.
+            //No need to check for the type of object.
 
             System.out.println("Congratulations, you've joined the voting server");
             System.out.println("------------------------------------------------");
